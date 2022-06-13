@@ -35,18 +35,19 @@ const Card: FC<CardProps> = ({ weather, index = -1, setLocalStorage }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  function clicksCard(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-    if (e.target && e.currentTarget.matches('div#closed')) {
+  function clicksCard(e: any): void {
+    console.log(e.target.id);
+    if (e.target && e.target.matches('div#closed')) {
       index !== -1 ? dispatch(removeWeatherCity(index)) : dispatch(removeWeatherMyLocation());
     }
-    if (e.target && e.currentTarget.matches('div#update')) {
+    if (e.target && e.target.matches('div#update')) {
       index !== -1
         ? dispatch(updateFetchWeatherCities(index))
         : dispatch(updateFetchWeatherMyLocation());
     }
     if (
-      !(e.currentTarget && e.currentTarget.matches('div#closed')) &&
-      !(e.currentTarget && e.currentTarget.matches('div#update'))
+      !(e.target && e.target.matches('div#closed')) &&
+      !(e.target && e.target.matches('div#update'))
     ) {
       setLocalStorage();
       index !== -1
