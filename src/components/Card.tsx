@@ -35,31 +35,29 @@ const Card: FC<CardProps> = ({ weather, index = -1, setLocalStorage }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  function clicksCard(e: any): void {
-    console.log(e.target.id);
-    if (e.target && e.target.matches('div#closed')) {
-      index !== -1 ? dispatch(removeWeatherCity(index)) : dispatch(removeWeatherMyLocation());
-    }
-    if (e.target && e.target.matches('div#update')) {
-      index !== -1
-        ? dispatch(updateFetchWeatherCities(index))
-        : dispatch(updateFetchWeatherMyLocation());
-    }
-    if (
-      !(e.target && e.target.matches('div#closed')) &&
-      !(e.target && e.target.matches('div#update'))
-    ) {
-      setLocalStorage();
-      index !== -1
-        ? navigate('/' + weatherCities[index].id + '-' + weatherCities[index].name)
-        : navigate('/' + weatherMyLocation?.id + '-' + weatherMyLocation?.name);
-    }
+  function clickCard() {
+    setLocalStorage();
+    index !== -1
+      ? navigate('/' + weatherCities[index].id + '-' + weatherCities[index].name)
+      : navigate('/' + weatherMyLocation?.id + '-' + weatherMyLocation?.name);
   }
 
+  const clickClosed: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    index !== -1 ? dispatch(removeWeatherCity(index)) : dispatch(removeWeatherMyLocation());
+    event.stopPropagation();
+  };
+
+  const clickUpdate: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    index !== -1
+      ? dispatch(updateFetchWeatherCities(index))
+      : dispatch(updateFetchWeatherMyLocation());
+    event.stopPropagation();
+  };
+
   return (
-    <WrapCard onClick={(event) => clicksCard(event)}>
+    <WrapCard onClick={clickCard}>
       <IWrapCardContent>
-        <CloseCardButton id="closed">&#10006;</CloseCardButton>
+        <CloseCardButton onClick={clickClosed}>&#10006;</CloseCardButton>
         <FlexSB>
           <FlexColumSB>
             <div>
@@ -78,7 +76,7 @@ const Card: FC<CardProps> = ({ weather, index = -1, setLocalStorage }) => {
           </FlexColumSB>
           <FlexColumSB alignItems="end">
             <TempStyled>{Math.round(weather.main.temp)}&#176;</TempStyled>
-            <IconUpdate id="update" />
+            <IconUpdate onClick={clickUpdate} />
           </FlexColumSB>
         </FlexSB>
       </IWrapCardContent>
